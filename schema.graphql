@@ -1,0 +1,88 @@
+type Vault @entity {
+  id: ID!
+  shortAmount: BigInt!
+  collateralAmount: BigInt!
+  NftCollateralId: BigInt
+  operator: Bytes
+  owner: Account!
+}
+
+type Account @entity {
+  id: ID!
+  vaults: [Vault!]! @derivedFrom(field: "owner")
+  vaultCount: BigInt!
+}
+
+type Liquidation @entity {
+  id: ID!
+  vaultId: BigInt!
+  debtAmount: BigInt!
+  collateralPaid: BigInt!
+  liquidator: Bytes!
+  timestamp: BigInt!
+}
+
+type NormalizationFactorUpdate @entity {
+  id: ID!
+  oldNormFactor: BigInt!
+  newNormFactor: BigInt!
+  lastModificationTimestamp: BigInt!
+  timestamp: BigInt!
+}
+
+type HourStatSnapshot @entity {
+  id: ID!
+  timestamp: BigInt!
+  totalCollateralAmount: BigInt!
+}
+
+type DayStatSnapshot @entity {
+  id: ID!
+  timestamp: BigInt!
+  totalCollateralAmount: BigInt!
+}
+
+enum Action {
+  WITHDRAW_COLLAT
+  DEPOSIT_COLLAT
+  MINT
+  OPEN_SHORT
+  BURN
+  ClOSE_SHORT
+  LIQUIDATE
+}
+
+type VaultHistory @entity {
+  id: ID!
+  timestamp: BigInt!
+  totalEthCollateralAmount: BigInt!
+  oSqthAmount: BigInt!
+  ethCollateralAmount: BigInt!
+  action: Action!
+  vaultId: BigInt!
+}
+
+type CrabStrategyTx @entity {
+  id: ID!
+  type: String!
+  lpAmount: BigInt
+  ethAmount: BigInt!
+  wSqueethAmount: BigInt
+  owner: Bytes
+  isSellingSqueeth: Boolean
+  timestamp: BigInt!
+  auctionPrice: BigInt
+  wSqueethHedgeTargetAmount: BigInt
+  ethHedgeTargetAmount: BigInt
+  hedgerPrice: BigInt
+}
+
+type CrabAuction @entity {
+  id: ID!
+  isSellingSqueeth: Boolean!
+  squeethAmount: BigInt!
+  ethAmount: BigInt!
+  isHedgingOnUniswap: Boolean!
+  owner: Bytes!
+  timestamp: BigInt!
+}
